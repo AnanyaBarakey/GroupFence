@@ -1,0 +1,11 @@
+<resources>
+    <color name="navy">#172554</color>
+    <color name="blue">#2563EB</color>
+    <color name="bg">#F4F7FB</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text">#172033</color>
+    <color name="muted">#64748B</color>
+    <color name="green">#15803D</color>
+    <color name="red">#B91C1C</color>
+    <color name="panel_stroke">#E2E8F0</color>
+</resources>

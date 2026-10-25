@@ -1,0 +1,20 @@
+
+GroupFence/
+├── app/
+│   ├── build.gradle
+│   └── src/main/
+│       ├── AndroidManifest.xml
+│       ├── java/com/example/groupfence/
+│       │   ├── ui/AuthActivity.java
+│       │   ├── ui/MainActivity.java
+│       │   ├── location/GeofenceManager.java
+│       │   ├── location/GeofenceReceiver.java
+│       │   └── notifications/{TokenManager,GroupFenceMessagingService}.java
+│       └── res/{layout,values,drawable}/
+├── functions/{index.js,package.json}
+├── firestore.rules
+├── firebase.json
+├── settings.gradle
+├── build.gradle
+├── gradle.properties
+└── README.md

@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function groupPath(groupId) { return /databases/$(database)/documents/groups/$(groupId); }
+    function memberPath(groupId, uid) { return /databases/$(database)/documents/groups/$(groupId)/members/$(uid); }
+    function membershipPath(uid, groupId) { return /databases/$(database)/documents/users/$(uid)/memberships/$(groupId); }
+    function isMember(groupId) {
+      return signedIn() && (
+        exists(memberPath(groupId, request.auth.uid)) ||
+        (exists(groupPath(groupId)) && get(groupPath(groupId)).data.ownerUid == request.auth.uid)
+      );
+    }
+    function isOwner(groupId) {
+      return signedIn() && (
+        (exists(groupPath(groupId)) && get(groupPath(groupId)).data.ownerUid == request.auth.uid) ||
+        (exists(memberPath(groupId, request.auth.uid)) && get(memberPath(groupId, request.auth.uid)).data.role == 'owner')
+      );
+    }
+    function validCodeHash(hash) { return hash is string && hash.matches('^[a-f0-9]{64}$'); }
+    function validGroupShape(d) {
+      return d.keys().hasOnly(['name','description','ownerUid','invitationCode','invitationCodeHash',
+        'latitude','longitude','radiusMeters','monitoringEnabled','configurationVersion','createdAt','updatedAt'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 60
+        && d.description is string && d.description.size() <= 300
+        && d.ownerUid == request.auth.uid
+        && d.invitationCode is string && d.invitationCode.matches('^[A-F0-9]{10}$')
+        && validCodeHash(d.invitationCodeHash)
+        && d.latitude is number && d.latitude >= -90 && d.latitude <= 90
+        && d.longitude is number && d.longitude >= -180 && d.longitude <= 180
+        && d.radiusMeters is int && d.radiusMeters >= 100 && d.radiusMeters <= 5000
+        && d.monitoringEnabled == true && d.configurationVersion == 1;
+    }
+    function validMemberShape(d, uid, role) {
+      return d.uid == uid && d.role == role && d.monitoringEnabled == true;
+    }
+    function validMembershipShape(d, groupId) {
+      return d.groupId == groupId;
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid','displayName','email','createdAt'])
+        && request.resource.data.uid == uid;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','email']);
+      allow delete: if false;
+      match /memberships/{groupId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && request.auth.uid == uid
+          && validMembershipShape(request.resource.data, groupId);
+        allow delete: if signedIn() && (
+          request.auth.uid == uid ||
+          isOwner(groupId) ||
+          !exists(groupPath(groupId))
+        );
+        allow update: if false;
+      }
+      match /devices/{deviceId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow create, update: if signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['token','updatedAt']);
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
+      match /notifications/{notificationId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && request.auth.uid == uid;
+        allow update: if signedIn() && request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
+    }
+
+    match /invitationCodes/{codeHash} {
+      allow get: if signedIn() && validCodeHash(codeHash);
+      allow list: if false;
+      allow create: if signedIn() && validCodeHash(codeHash)
+        && request.resource.data.keys().hasOnly(['groupId','createdAt']);
+      allow update: if false;
+      allow delete: if signedIn();
+    }
+
+    match /groups/{groupId} {
+      allow read: if isMember(groupId);
+      allow create: if signedIn() && validGroupShape(request.resource.data);
+      allow update: if signedIn() && (resource.data.ownerUid == request.auth.uid || isOwner(groupId));
+      allow delete: if signedIn() && (resource.data.ownerUid == request.auth.uid || isOwner(groupId));
+      match /members/{memberUid} {
+        allow read: if isMember(groupId);
+        allow create: if signedIn() && (request.auth.uid == memberUid || isOwner(groupId));
+        allow delete: if signedIn() && (
+          request.auth.uid == memberUid ||
+          isOwner(groupId) ||
+          resource.data.uid == request.auth.uid
+        );
+        allow update: if signedIn() && (
+          isOwner(groupId) ||
+          resource.data.uid == request.auth.uid
+        );
+      }
+      match /events/{eventId} {
+        allow read: if isMember(groupId);
+        allow create: if signedIn() && isMember(groupId) && request.resource.data.memberUid == request.auth.uid;
+        allow delete: if signedIn() && isOwner(groupId);
+        allow update: if false;
+      }
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

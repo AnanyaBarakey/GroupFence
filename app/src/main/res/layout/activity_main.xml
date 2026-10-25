@@ -1,0 +1,21 @@
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/bg">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="20dp">
+        <TextView android:id="@+id/welcomeText" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Your groups" android:textColor="@color/navy" android:textSize="28sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Checking monitoring status…" android:textColor="@color/muted" android:textSize="14sp"
+            android:layout_marginTop="8dp" android:padding="14dp" android:background="@drawable/panel"/>
+        <Button android:id="@+id/createButton" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Create group" android:layout_marginTop="16dp"/>
+        <Button android:id="@+id/joinButton" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Join with invitation code"/>
+        <Button android:id="@+id/refreshButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Refresh groups"/>
+        <Button android:id="@+id/logoutButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Log out"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Your groups"
+            android:textColor="@color/text" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="22dp"/>
+        <LinearLayout android:id="@+id/groupsContainer" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,30 @@
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/bg" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp" android:gravity="center_vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="GroupFence" android:textColor="@color/navy" android:textSize="32sp" android:textStyle="bold"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Know when your group arrives or leaves a shared place." android:textSize="16sp"
+            android:textColor="@color/muted" android:layout_marginTop="8dp" android:layout_marginBottom="28dp"/>
+        <EditText android:id="@+id/nameInput" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Display name (for registration)" android:inputType="textPersonName" android:padding="14dp"/>
+        <EditText android:id="@+id/emailInput" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Email" android:inputType="textEmailAddress" android:padding="14dp"/>
+        <EditText android:id="@+id/passwordInput" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Password (6+ characters)" android:inputType="textPassword" android:padding="14dp"/>
+        <Button android:id="@+id/loginButton" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Log in" android:layout_marginTop="18dp"/>
+        <Button android:id="@+id/registerButton" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Create account"/>
+        <Button android:id="@+id/resetButton" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Reset password" style="@style/Widget.AppCompat.Button.Borderless"/>
+        <ProgressBar android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:visibility="gone"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Location is only used for OS geofence transitions. Background permission may be required for monitoring when the app is not visible."
+            android:textColor="@color/muted" android:textSize="12sp" android:layout_marginTop="22dp"/>
+    </LinearLayout>
+</ScrollView>

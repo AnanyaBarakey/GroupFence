@@ -1,0 +1,10 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+    android:padding="16dp" android:layout_marginTop="10dp" android:background="@drawable/panel">
+    <TextView android:id="@+id/groupName" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="18sp" android:textStyle="bold" android:textColor="@color/navy"/>
+    <TextView android:id="@+id/groupInfo" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="@color/muted" android:layout_marginTop="4dp"/>
+    <Button android:id="@+id/detailsButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Open group"/>
+</LinearLayout>
